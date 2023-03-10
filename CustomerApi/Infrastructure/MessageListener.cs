@@ -1,24 +1,35 @@
 ﻿using System;
 using System.Threading;
+using CustomerApi.Data;
+using CustomerApi.Models;
 using EasyNetQ;
 using Microsoft.Extensions.DependencyInjection;
+using SharedModels;
 
 namespace CustomerApi.Infrastructure;
 
 public class MessageListener
 {
+    IServiceProvider provider;
+    string connectionString;
 
-
-    public async Task Handle(OrderCreatedEvent @event)
+    // The service provider is passed as a parameter, because the class needs
+    // access to the product repository. With the service provider, we can create
+    // a service scope that can provide an instance of the product repository.
+    public MessageListener(IServiceProvider provider, string connectionString)
     {
-        var customer = _repository.Get(@event.CustomerId);
-        var alldasd = _repository.GetAll();
+        this.provider = provider;
+        this.connectionString = connectionString;
+    }
 
-        if (customer != null)
+    public void HandleCustomerVerification(CustomerVerificationMessage message)
+    {
+        using (var scope = provider.CreateScope())
         {
-            //TODO: check the customer’s credit standing
-            //TODO: check if the customer has outstanding bills
+            if(message.CustomerId != null)
+            {
 
+            }
         }
     }
 }
