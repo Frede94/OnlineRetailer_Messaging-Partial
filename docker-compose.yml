@@ -9,10 +9,12 @@ services:
 
   orderapi:
     image: ${DOCKER_REGISTRY-}orderapi
+    ports:
+    - 9000:80
     build:
       context: .
       dockerfile: OrderApi/Dockerfile
-
+      
   productapi:
     image: ${DOCKER_REGISTRY-}productapi
     build:
