@@ -10,7 +10,7 @@ namespace CustomerApi.Data
 
         public IEnumerable<Customer> GetAll()
         {
-            throw new NotImplementedException();
+            return db.Customers.ToList();
         }
 
         Customer IRepository<Customer>.Add(Customer entity)
