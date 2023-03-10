@@ -12,6 +12,7 @@ public class MessageListener
 {
     IServiceProvider provider;
     string connectionString;
+    IBus bus;
 
     // The service provider is passed as a parameter, because the class needs
     // access to the product repository. With the service provider, we can create
@@ -20,15 +21,21 @@ public class MessageListener
     {
         this.provider = provider;
         this.connectionString = connectionString;
+        bus = RabbitHutch.CreateBus(connectionString);
     }
 
-    public void HandleCustomerVerification(CustomerVerificationMessage message)
+    public void HandleCustomerVerification(CustomerVerificationMessage orderMessage, bool verification)
     {
         using (var scope = provider.CreateScope())
         {
-            if(message.CustomerId != null)
+            if(orderMessage.CustomerId != null)
             {
+                var message = new EmptyMessage
+                {
+                    verified = verification
+                };
 
+                bus.PubSub.Publish(message, "verified");
             }
         }
     }
