@@ -3,10 +3,6 @@ using CustomerApi.Events;
 using CustomerApi.Models;
 using RabbitMQ.Eventing;
 using RabbitMQ.Interfaces;
-using System; 
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CustomerApi.EventHandlers
 {
