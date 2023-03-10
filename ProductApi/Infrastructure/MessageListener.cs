@@ -28,13 +28,16 @@ namespace ProductApi.Infrastructure
             {
                 bus.PubSub.Subscribe<OrderStatusChangedMessage>("productApiHkCompleted", 
                     HandleOrderCompleted, x => x.WithTopic("completed"));
-                bus.PubSub.Subscribe<OrderStatusChangedMessage>("productApiHKCancelled",
-                    HandleOrderCancelled, x => x.WithTopic("cancelled"));
-
                 // Add code to subscribe to other OrderStatusChanged events:
                 // * cancelled
+                bus.PubSub.Subscribe<OrderStatusChangedMessage>("productApiHKCancelled",
+                    HandleOrderCancelled, x => x.WithTopic("cancelled"));
                 // * shipped
+                bus.PubSub.Subscribe<OrderStatusChangedMessage>("productApiHKShipped",
+                    HandleOrderShipped, x => x.WithTopic("shipped"));
                 // * paid
+                bus.PubSub.Subscribe<OrderStatusChangedMessage>("productApiHKPaid",
+                    HandleOrderPaid, x => x.WithTopic("paid"));
                 // Implement an event handler for each of these events.
                 // Be careful that each subscribe has a unique subscription id
                 // (this is the first parameter to the Subscribe method). If they
@@ -48,6 +51,16 @@ namespace ProductApi.Infrastructure
                 }
             }
 
+        }
+
+        private void HandleOrderPaid(OrderStatusChangedMessage message)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void HandleOrderShipped(OrderStatusChangedMessage message)
+        {
+            throw new NotImplementedException();
         }
 
         private void HandleOrderCancelled(OrderStatusChangedMessage message)
