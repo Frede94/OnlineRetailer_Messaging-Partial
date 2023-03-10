@@ -12,7 +12,7 @@ public class MessageListener
 {
     IServiceProvider provider;
     string connectionString;
-    IBus bus;
+    IBus _bus;
 
     // The service provider is passed as a parameter, because the class needs
     // access to the product repository. With the service provider, we can create
@@ -21,21 +21,48 @@ public class MessageListener
     {
         this.provider = provider;
         this.connectionString = connectionString;
-        bus = RabbitHutch.CreateBus(connectionString);
+        _bus = RabbitHutch.CreateBus(connectionString);
     }
-
-    public void HandleCustomerVerification(CustomerVerificationMessage orderMessage, bool verification)
+    
+    public void Start()
+    {
+        using (var bus = RabbitHutch.CreateBus(connectionString))
+        {
+            bus.PubSub.Subscribe<CustomerVerificationMessage>(
+                "customerApiVerified",
+                HandleCustomerVerification,
+                x => x.WithTopic("verified"));
+        }
+    }
+    
+    public void HandleCustomerVerification(CustomerVerificationMessage orderMessage)
     {
         using (var scope = provider.CreateScope())
         {
+            var services = scope.ServiceProvider;
+            var customerRepos = services.GetService<IRepository<Customer>>();
             if(orderMessage.CustomerId != null)
             {
-                var message = new EmptyMessage
+                var customer = customerRepos.Get(orderMessage.CustomerId.Value);
+                if (customer != null)
                 {
-                    verified = verification
-                };
+                    var message = new EmptyMessage
+                    {
+                        verified = true
+                    };
 
-                bus.PubSub.Publish(message, "verified");
+                    _bus.PubSub.Publish(message, "verified");
+                }
+                else
+                {
+                    var message = new EmptyMessage
+                    {
+                        verified = false
+                    };
+
+                    _bus.PubSub.Publish(message, "verified");
+                }
+                
             }
         }
     }
