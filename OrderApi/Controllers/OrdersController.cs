@@ -14,6 +14,7 @@ namespace OrderApi.Controllers
         IOrderRepository repository;
         IServiceGateway<ProductDto> productServiceGateway;
         IMessagePublisher messagePublisher;
+        public static bool verified;
 
         public OrdersController(IRepository<Order> repos,
             IServiceGateway<ProductDto> gateway,
@@ -54,32 +55,33 @@ namespace OrderApi.Controllers
 
             if (ProductItemsAvailable(order))
             {
-                try
-                {   
-                    //Check if customer exists
+                if (verified)
+                {
+                    try
+                    {   
+                        
+                        //Check if customer exists
+                        messagePublisher.PublishCustomerVerificationMessage(order.customerId,"verifycustomer");
                     
-                    messagePublisher.PublishCustomerVerificationMessage(order.customerId,"verifycustomer");
                     
                         // Publish OrderStatusChangedMessage. If this operation
-                    // fails, the order will not be created
-                    messagePublisher.PublishOrderStatusChangedMessage(
-                        order.customerId, order.OrderLines, "completed");
+                        // fails, the order will not be created
+                        messagePublisher.PublishOrderStatusChangedMessage(
+                            order.customerId, order.OrderLines, "completed");
 
-                    // Create order.
-                    order.Status = Order.OrderStatus.completed;
-                    var newOrder = repository.Add(order);
-                    return CreatedAtRoute("GetOrder", new { id = newOrder.Id }, newOrder);
-                }
-                catch
-                {
-                    return StatusCode(500, "An error happened. Try again.");
+                        // Create order.
+                        order.Status = Order.OrderStatus.completed;
+                        var newOrder = repository.Add(order);
+                        return CreatedAtRoute("GetOrder", new { id = newOrder.Id }, newOrder);
+                    }
+                    catch
+                    {
+                        return StatusCode(500, "An error happened. Try again.");
+                    }   
                 }
             }
-            else
-            {
-                // If there are not enough product items available.
-                return StatusCode(500, "Not enough items in stock.");
-            }
+
+            return StatusCode(500, "You dun goofed");
         }
 
         private bool ProductItemsAvailable(Order order)
@@ -95,7 +97,7 @@ namespace OrderApi.Controllers
             }
             return true;
         }
-
+        
         // PUT orders/5/cancel
         // This action method cancels an order and publishes an OrderStatusChangedMessage
         // with topic set to "cancelled".
