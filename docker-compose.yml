@@ -1,11 +1,11 @@
 version: '3.4'
 
 services:
-  productapi:
-    image: ${DOCKER_REGISTRY-}productapi
+  customerapi:
+    image: ${DOCKER_REGISTRY-}customerapi
     build:
       context: .
-      dockerfile: ProductApi/Dockerfile
+      dockerfile: CustomerApi/Dockerfile
 
   orderapi:
     image: ${DOCKER_REGISTRY-}orderapi
@@ -13,7 +13,9 @@ services:
       context: .
       dockerfile: OrderApi/Dockerfile
 
-#  rabbitmq:
-#    image: rabbitmq:3-management
-#    ports:
-#    - "15673:15672"
+  productapi:
+    image: ${DOCKER_REGISTRY-}productapi
+    build:
+      context: .
+      dockerfile: ProductApi/Dockerfile
+
