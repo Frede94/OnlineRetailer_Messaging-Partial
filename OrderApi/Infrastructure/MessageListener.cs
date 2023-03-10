@@ -25,6 +25,12 @@ public class MessageListener
             bus.PubSub.Subscribe<EmptyMessage>("customerAPI",
                 HandleCustomerVerified, x => x.WithTopic("verified"));
         }
+        
+        lock (this)
+        {
+            Monitor.Wait(this);
+        }
+        
     }
 
     private void HandleCustomerVerified(EmptyMessage message)

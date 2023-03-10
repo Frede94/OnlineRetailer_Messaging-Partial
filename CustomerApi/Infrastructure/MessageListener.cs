@@ -33,6 +33,11 @@ public class MessageListener
                 HandleCustomerVerification,
                 x => x.WithTopic("verified"));
         }
+
+        lock (this)
+        {
+            Monitor.Wait(this);
+        }
     }
     
     public void HandleCustomerVerification(CustomerVerificationMessage orderMessage)
