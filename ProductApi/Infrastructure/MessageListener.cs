@@ -28,6 +28,8 @@ namespace ProductApi.Infrastructure
             {
                 bus.PubSub.Subscribe<OrderStatusChangedMessage>("productApiHkCompleted", 
                     HandleOrderCompleted, x => x.WithTopic("completed"));
+                bus.PubSub.Subscribe<OrderStatusChangedMessage>("productApiHKCancelled",
+                    HandleOrderCancelled, x => x.WithTopic("cancelled"));
 
                 // Add code to subscribe to other OrderStatusChanged events:
                 // * cancelled
@@ -46,6 +48,22 @@ namespace ProductApi.Infrastructure
                 }
             }
 
+        }
+
+        private void HandleOrderCancelled(OrderStatusChangedMessage message)
+        {
+            using (var scope = provider.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var productRepos = services.GetService<IRepository<Product>>();
+
+                foreach (var orderLine in message.OrderLines)
+                {
+                    var product = productRepos.Get(orderLine.ProductId);
+                    product.ItemsReserved -= orderLine.Quantity;
+                    productRepos.Edit(product);
+                }
+            }
         }
 
         private void HandleOrderCompleted(OrderStatusChangedMessage message)
