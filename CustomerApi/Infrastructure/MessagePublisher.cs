@@ -1,4 +1,5 @@
 ﻿using EasyNetQ;
+using SharedModels;
 
 namespace CustomerApi.Infrastructure;
 
@@ -15,18 +16,15 @@ public class MessagePublisher : IMessagePublisher, IDisposable
     {
         bus.Dispose();
     }
-    
-    /*
-    public void PublishOrderStatusChangedMessage(int? customerId, IList<OrderLine> orderLines, string topic)
-    {
-        var message = new OrderStatusChangedMessage
-        { 
-            CustomerId = customerId,
-            OrderLines = orderLines 
-        };
 
+    public void PublishCustomerVerificationMessage(bool verification, string topic)
+    {
+        var message = new EmptyMessage
+        {
+            verified = verification
+        };
+        
         bus.PubSub.Publish(message, topic);
     }
-    */
-    
+
 }
