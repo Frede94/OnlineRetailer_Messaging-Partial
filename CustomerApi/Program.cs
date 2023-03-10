@@ -1,3 +1,8 @@
+using CustomerApi.Data;
+using CustomerApi.Infrastructure;
+using CustomerApi.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -8,6 +13,22 @@ string cloudAMQPConnectionString =
 
 
 // Add services to the container.
+
+builder.Services.AddDbContext<CustomerApiContext>(opt => opt.UseInMemoryDatabase("CustomersDb"));
+
+// Register repositories for dependency injection
+builder.Services.AddScoped<IRepository<Customer>, CustomerRepository>();
+
+// Register database initializer for dependency injection
+builder.Services.AddTransient<IDbInitializer, DbInitializer>();
+
+
+
+// Register MessagePublisher (a messaging gateway) for dependency injection
+builder.Services.AddSingleton<IMessagePublisher>(new
+    MessagePublisher(cloudAMQPConnectionString));
+
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

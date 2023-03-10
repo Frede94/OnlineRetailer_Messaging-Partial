@@ -21,7 +21,7 @@ namespace ProductApi.Infrastructure
             this.provider = provider;
             this.connectionString = connectionString;
         }
-
+        
         public void Start()
         {
             using (var bus = RabbitHutch.CreateBus(connectionString))
@@ -60,7 +60,19 @@ namespace ProductApi.Infrastructure
 
         private void HandleOrderShipped(OrderStatusChangedMessage message)
         {
-            throw new NotImplementedException();
+            using (var scope = provider.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var productRepos = services.GetService<IRepository<Product>>();
+
+                foreach (var orderLine in message.OrderLines)
+                {
+                    var product = productRepos.Get(orderLine.ProductId);
+                    product.ItemsReserved -= orderLine.Quantity;
+                    product.ItemsInStock -= orderLine.Quantity;
+                    productRepos.Edit(product);
+                }
+            }
         }
 
         private void HandleOrderCancelled(OrderStatusChangedMessage message)
@@ -72,6 +84,7 @@ namespace ProductApi.Infrastructure
 
                 foreach (var orderLine in message.OrderLines)
                 {
+                    
                     var product = productRepos.Get(orderLine.ProductId);
                     product.ItemsReserved -= orderLine.Quantity;
                     productRepos.Edit(product);

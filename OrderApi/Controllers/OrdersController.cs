@@ -55,8 +55,12 @@ namespace OrderApi.Controllers
             if (ProductItemsAvailable(order))
             {
                 try
-                {
-                    // Publish OrderStatusChangedMessage. If this operation
+                {   
+                    //Check if customer exists
+                    
+                    messagePublisher.PublishCustomerVerificationMessage(order.customerId,"verifycustomer");
+                    
+                        // Publish OrderStatusChangedMessage. If this operation
                     // fails, the order will not be created
                     messagePublisher.PublishOrderStatusChangedMessage(
                         order.customerId, order.OrderLines, "completed");

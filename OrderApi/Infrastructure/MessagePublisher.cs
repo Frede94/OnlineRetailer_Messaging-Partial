@@ -30,5 +30,14 @@ namespace OrderApi.Infrastructure
             bus.PubSub.Publish(message, topic);
         }
 
+        public void PublishCustomerVerificationMessage(int? customerId, string topic)
+        {
+            var message = new OrderStatusChangedMessage
+            {
+                CustomerId = customerId
+            };
+            
+            bus.PubSub.Publish(message, topic);
+        }
     }
 }
