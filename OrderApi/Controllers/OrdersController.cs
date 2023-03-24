@@ -57,8 +57,9 @@ namespace OrderApi.Controllers
             {
                 //Check if customer exists
                 messagePublisher.PublishCustomerVerificationMessage(order.customerId, "verifycustomer");
-                if (verified)
-                {
+                Thread.Sleep(1000);
+                //if (verified)
+                //{
                     try
                     {   
                         // Publish OrderStatusChangedMessage. If this operation
@@ -73,12 +74,13 @@ namespace OrderApi.Controllers
                     }
                     catch
                     {
-                        return StatusCode(500, "An error happened. Try again.");
+                        return StatusCode(500, "You dun goofed, OrdersController, line 77");
                     }   
-                }
+                //}
+
             }
 
-            return StatusCode(500, "You dun goofed");
+            return StatusCode(500, "You dun goofed, OrdersController, line 84");
         }
 
         private bool ProductItemsAvailable(Order order)
