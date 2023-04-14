@@ -1,23 +1,69 @@
 version: '3.4'
 
 services:
+  productapi:
+    image: ${DOCKER_REGISTRY-}productapi
+    build:
+      context: .
+      dockerfile: ProductApi/Dockerfile
+
+  orderapi:
+    image: ${DOCKER_REGISTRY-}orderapi
+    build:
+      context: .
+      dockerfile: OrderApi/Dockerfile
+
   customerapi:
     image: ${DOCKER_REGISTRY-}customerapi
     build:
       context: .
       dockerfile: CustomerApi/Dockerfile
 
-  orderapi:
-    image: ${DOCKER_REGISTRY-}orderapi
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+
+  prometheus:
+    image: prom/prometheus
     ports:
-    - 9000:80
-    build:
-      context: .
-      dockerfile: OrderApi/Dockerfile
-      
-  productapi:
-    image: ${DOCKER_REGISTRY-}productapi
-    build:
-      context: .
-      dockerfile: ProductApi/Dockerfile
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  grafana: 
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+
+
+#version: '3.4'
+
+#services:
+#  apigateway:
+#    image: ${DOCKER_REGISTRY-}apigateway
+#    build:
+#      context: .
+#      dockerfile: APIGateway/Dockerfile
+
+#  customerapi:
+#    image: ${DOCKER_REGISTRY-}customerapi
+#    build:
+#      context: .
+#      dockerfile: CustomerApi/Dockerfile
+
+
+#  orderapi:
+#    image: ${DOCKER_REGISTRY-}orderapi
+#    build:
+#      context: .
+#      dockerfile: OrderApi/Dockerfile
+
+
+#  productapi:
+#    image: ${DOCKER_REGISTRY-}productapi
+#    build:
+#      context: .
+#      dockerfile: ProductApi/Dockerfile
 
