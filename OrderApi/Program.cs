@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using OrderApi.Data;
 using OrderApi.Infrastructure;
+using Prometheus;
 using SharedModels;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,8 +66,12 @@ using (var scope = app.Services.CreateScope())
 
 //app.UseHttpsRedirection();
 
+app.UseHttpMetrics();
+
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapMetrics();
 
 app.Run();
