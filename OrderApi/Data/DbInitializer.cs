@@ -23,8 +23,19 @@ namespace OrderApi.Data
             {
                 new Order {
                     Date = DateTime.Today,
+                    customerId = 1,
                     OrderLines = new List<OrderLine>{
-                        new OrderLine { ProductId = 1, Quantity = 2 } }
+                        new OrderLine { ProductId = 1, Quantity = 2, CustomerId = 1 } }
+                }, new Order {
+                    Date = DateTime.Today,
+                    customerId = 1,
+                    OrderLines = new List<OrderLine>{
+                        new OrderLine { ProductId = 2, Quantity = 5, CustomerId = 1} }
+                }, new Order {
+                    Date = DateTime.Today,
+                    customerId = 1,
+                    OrderLines = new List<OrderLine>{
+                        new OrderLine { ProductId = 1, Quantity = 11, CustomerId = 1 } }
                 }
             };
 
