@@ -28,6 +28,19 @@
       "UpstreamPathTemplate": "/orderapi/{catchAll}",
       "UpstreamHttpMethod": [ "Get", "Post" ]
     }
+    {
+      // OrderApi routes
+      "DownstreamPathTemplate": "/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "CustomerApi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/CustomerApi/{catchAll}",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
+    }
   ],
   // Global configuration
   "GlobalConfiguration": {
