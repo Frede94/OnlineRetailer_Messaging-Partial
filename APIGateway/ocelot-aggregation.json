@@ -111,21 +111,22 @@
       ],
       "UpstreamPathTemplate": "/orderapi/{catchAll}",
       "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    {
+      // Other customerApi routes
+      "DownstreamPathTemplate": "/{catchAll}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "customerApi",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/customerApi/{catchAll}",
+      "UpstreamHttpMethod": [ "Get" ]
     }
   ],
-  {
-    // Other customerApi routes
-    "DownstreamPathTemplate": "/{catchAll}",
-    "DownstreamScheme": "http",
-    "DownstreamHostAndPorts": [
-      {
-        "Host": "customerApi",
-        "Port": 80
-      }
-    ],
-    "UpstreamPathTemplate": "/customerApi/{catchAll}",
-    "UpstreamHttpMethod": [ "Get" ]
-  },
+  
   // Aggregates:
   "Aggregates": [
     // Orders by product
