@@ -44,6 +44,44 @@ namespace OrderApi.Controllers
             return new ObjectResult(item);
         }
 
+        // GET orders/product/5
+        // This action method was provided to support request aggregate
+        // "Orders by product" in OnlineRetailerApiGateway.
+        [HttpGet("product/{id}", Name = "GetOrderByProduct")]
+        public IEnumerable<Order> GetByProduct(int id)
+        {
+            List<Order> ordersWithSpecificProduct = new List<Order>();
+
+            foreach (var order in repository.GetAll())
+            {
+                if (order.OrderLines.Where(o => o.ProductId == id).Any())
+                {
+                    ordersWithSpecificProduct.Add(order);
+                }
+            }
+
+            return ordersWithSpecificProduct;
+        }
+
+        // GET customer/product/5
+        // This action method was provided to support request aggregate
+        // "Orders by customer" in OnlineRetailerApiGateway.
+        [HttpGet("customer/{id}", Name = "GetOrderByCustomer")]
+        public IEnumerable<Order> GetByCustomer(int id)
+        {
+            List<Order> ordersWithSpecificCustomer = new List<Order>();
+
+            foreach (var order in repository.GetAll())
+            {
+                if (order.OrderLines.Where(o => o.CustomerId == id).Any())
+                {
+                    ordersWithSpecificCustomer.Add(order);
+                }
+            }
+
+            return ordersWithSpecificCustomer;
+        }
+
         // POST orders
         [HttpPost]
         public IActionResult Post([FromBody]Order order)
