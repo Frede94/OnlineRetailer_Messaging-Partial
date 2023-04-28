@@ -112,13 +112,17 @@ namespace OrderApi.Controllers
                     }
                     catch
                     {
-                        return StatusCode(500, "You dun goofed, OrdersController, line 77");
+                        return StatusCode(500, "You dun goofed, OrdersController");
                     }   
                 //}
 
             }
+            else
+            {
+                //DO SOMETHING
+            }
 
-            return StatusCode(500, "You dun goofed, OrdersController, line 84");
+            return StatusCode(500, "You dun goofed, OrdersController");
         }
 
         private bool ProductItemsAvailable(Order order)
